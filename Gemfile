@@ -1,5 +1,3 @@
-ruby '2.1.0'
-
 source "https://rubygems.org"
 
 gem 'discordrb', '~> 2.1.1'
