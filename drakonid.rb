@@ -6,6 +6,8 @@
 require 'json'
 require 'discordrb'
 require_relative 'logging'
+require_relative 'plugins/base'
+require_relative 'plugins/bnet'
 
 # Constants
 DISCORD_APP_ID_KEY = "discord_app_id"
@@ -29,26 +31,12 @@ def load_config()
   return config
 end
 
-def attach_plugins(config, bot)
-  # Base
-  require_relative 'plugins/base'
-  base_plugin = Base.new
-  base_plugin.attach_to_bot(bot)
-
-  # Battle.net
-  if config[BNET_PRIVATE_KEY] == ""
-    warn "Skipping BNet plugin: missing authentication keys."
-  else
-    require_relative 'plugins/bnet'
-    bnet = BNet.new
-    bnet.attach_to_bot(bot, config[BNET_PRIVATE_KEY])
-  end
-end
-
 # Main
 config = load_config
+BNet.init(config[BNET_PRIVATE_KEY])
 bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY], application_id: config[DISCORD_APP_ID_KEY].to_i,
   prefix: COMMAND_PREFIX)
-attach_plugins(config, bot)
+bot.include! Base
+bot.include! BNet
 
 bot.run

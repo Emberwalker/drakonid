@@ -1,16 +1,56 @@
 require 'battlenet'
 require 'json'
+require 'discordrb'
 require_relative '../logging'
 
-class BNet
-  def attach_to_bot(bot, privkey)
-    conf = get_config
-    @current_realm = conf[@@REALM_KEY]
-    Battlenet.locale = "en_GB"
-    @api = Battlenet.new conf[@@REGION_KEY].intern, privkey
+module BNet
+  extend Discordrb::Commands::CommandContainer
 
-    attach_buckets(bot)
-    attach_realm_status(bot)
+  def self.init(privkey)
+    privkey = nil if privkey == ""
+    conf = get_config
+    @@current_realm = conf[@@REALM_KEY]
+    Battlenet.locale = "en_GB"
+    @@api = Battlenet.new conf[@@REGION_KEY].intern, privkey if privkey
+  end
+
+  bucket :realm_status, limit: 4, time_span: 60, delay: 5
+  bucket :showme, limit: 6, time_span: 60, delay: 2
+
+  command :realm, bucket: :realm_status do |event, *realm|
+    return "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:" unless @@api
+    msg = event.send_message @@WAIT_MESSAGES.sample
+    rlm = @@current_realm
+    rlm = realm.join " " unless realm.empty?
+    "#{event.user.mention} #{get_realm_status(rlm)}"
+  end
+
+  command :showme, bucket: :showme do |event, char, *realm|
+    if char == "" || !char
+      event.send_message "#{event.user.mention} Show you... who? (usage: !showme <name> <realm> - realm is optional)"
+      return
+    end
+    if !@@api
+      event.send_message "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:"
+      return
+    end
+
+    debug "showme/#{char}/#{realm.join " "}"
+    event.send_message @@WAIT_MESSAGES.sample
+    rlm = @@current_realm
+    rlm = realm.join " " unless realm.empty?
+
+    begin
+      char_data = @@api.character rlm, char, :fields => "appearance"
+      event.send_message "#{event.user.mention} http://render-api-eu.worldofwarcraft.com/static-render/eu/#{char_data["thumbnail"]}"
+    rescue Battlenet::ApiException => ex
+      if ex.code == 404
+        event.send_message "#{event.user.mention} I couldn't find that player. Is your spelling correct?"
+      else
+        warn "Error fetching character data: #{ex.response}"
+        event.send_message ":satellite: :boom: I couldn't work out wtf Battle.net was smoking. Try again later!"
+      end
+    end
   end
 
   private
@@ -26,13 +66,14 @@ class BNet
   @@WAIT_MESSAGES = [
     "Let me look that up. One moment...",
     "Consulting the oracle for you...",
-    "That realm? Really? Alright. One second..."
+    "Huh? You sure? Alright, fine. One second...",
+    "Why would you want that? \'kay, moment..."
   ]
 
-  @current_realm = @@REALM_DEFAULT
-  @api = nil
+  @@current_realm = @@REALM_DEFAULT
+  @@api = nil
 
-  def get_config()
+  def self.get_config()
     begin
       raw = File.read 'bnet.json'
       conf = JSON.parse raw
@@ -45,24 +86,9 @@ class BNet
     return conf
   end
 
-  def attach_buckets(bot)
-    bot.bucket :realm_status, limit: 4, time_span: 60, delay: 5
-  end
-
-  def attach_realm_status(bot)
-    bot.command :realm, bucket: :realm_status do |event, *realm|
-      msg = event.send_message @@WAIT_MESSAGES.sample
-      rlm = @current_realm
-      rlm = realm.join " " unless realm.empty?
-      "#{event.user.mention} #{get_realm_status(rlm)}"
-    end
-  end
-
-  def get_realm_status(realm)
-    fatal "BNet API controller isn't available?!" unless @api
-
+  def self.get_realm_status(realm)
     begin
-      realm_data = @api.realm["realms"]
+      realm_data = @@api.realm["realms"]
       out_rlm = nil
       for rlm in realm_data
         if rlm["name"] == realm
@@ -78,7 +104,7 @@ class BNet
     end
   end
 
-  def __render_realm(realm)
+  def self.__render_realm(realm)
     updown = "#{realm['name']} is currently "
     if realm['status']
       updown += "UP! :crossed_swords:"
