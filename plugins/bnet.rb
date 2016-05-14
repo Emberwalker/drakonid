@@ -20,6 +20,7 @@ module BNet
   command :realm, bucket: :realm_status do |event, *realm|
     return "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:" unless @@api
     msg = event.send_message @@WAIT_MESSAGES.sample
+    event.channel.start_typing
     rlm = @@current_realm
     rlm = realm.join " " unless realm.empty?
     "#{event.user.mention} #{get_realm_status(rlm)}"
@@ -37,6 +38,7 @@ module BNet
 
     debug "showme/#{char}/#{realm.join " "}"
     event.send_message @@WAIT_MESSAGES.sample
+    event.channel.start_typing
     rlm = @@current_realm
     rlm = realm.join " " unless realm.empty?
 
