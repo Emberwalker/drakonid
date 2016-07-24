@@ -99,7 +99,13 @@ module BNet
         end
       end
       return "I couldn't find that realm, sorry!" unless out_rlm
-      return __render_realm(out_rlm)
+      begin
+        return __render_realm(out_rlm)
+      rescue Exception => ex
+        warn "Error rendering realm status: #{ex.inspect}"
+        warn "Offending response: #{out_rlm}"
+        return ":satellite: :boom: I've had some trouble producing that report. Sorry!"
+      end
     rescue Battlenet::ApiException => ex
       warn "Failed to get realm status: #{ex.response}"
       return ":satellite: :boom: I couldn't work out wtf Battle.net was smoking. Try again later!"
@@ -117,52 +123,62 @@ module BNet
 
     wg = "Wintergrasp is currently held by "
     wg_data = realm['wintergrasp']
-    wg += case @@PVP_FACTIONS[wg_data['controlling-faction']]
-    when :alliance
-      "the Alliance! "
-    when :horde
-      "the Horde! "
+    if wg_data
+      wg += case @@PVP_FACTIONS[wg_data['controlling-faction']]
+      when :alliance
+        "the Alliance! "
+      when :horde
+        "the Horde! "
+      else
+        "nobody! "
+      end
+      wg += "Currently, the zone is"
+      wg += case @@PVP_STATUS[wg_data['status']]
+      when :idle
+        " uncontested."
+      when :populating
+        " waiting for players!"
+      when :active
+        " at WAR! :crossed_swords:"
+      when :concluded
+        " just finishing a battle."
+      else
+        warn "Unknown Wintergrasp status: #{wg_data['status']}"
+        "... Actually I don't know."
+      end
     else
-      "nobody! "
-    end
-    wg += "Currently, the zone is"
-    wg += case @@PVP_STATUS[wg_data['status']]
-    when :idle
-      " uncontested."
-    when :populating
-      " waiting for players!"
-    when :active
-      " at WAR! :crossed_swords:"
-    when :concluded
-      " just finishing a battle."
-    else
-      warn "Unknown Wintergrasp status: #{wg_data['status']}"
-      "... Actually I don't know."
+      warn "Wintergrasp data missing; skipping."
+      wg = "Wintergrasp data is unavailable. :shield:"
     end
 
     tb = "Tol-barad is currently held by "
     tb_data = realm['tol-barad']
-    tb += case @@PVP_FACTIONS[tb_data['controlling-faction']]
-    when :alliance
-      "the Alliance! "
-    when :horde
-      "the Horde! "
+    if tb_data
+      tb += case @@PVP_FACTIONS[tb_data['controlling-faction']]
+      when :alliance
+        "the Alliance! "
+      when :horde
+        "the Horde! "
+      else
+        "nobody! "
+      end
+      tb += "Currently, the zone is"
+      tb += case @@PVP_STATUS[tb_data['status']]
+      when :idle
+        " uncontested."
+      when :populating
+        " waiting for players!"
+      when :active
+        " at WAR! :crossed_swords:"
+      when :concluded
+        " just finishing a battle."
+      else
+        warn "Unknown Tol-barad status: #{tb_data['status']}"
+        "... Actually I don't know."
+      end
     else
-      "nobody! "
-    end
-    tb += "Currently, the zone is"
-    tb += case @@PVP_STATUS[tb_data['status']]
-    when :idle
-      " uncontested."
-    when :populating
-      " waiting for players!"
-    when :active
-      " at WAR! :crossed_swords:"
-    when :concluded
-      " just finishing a battle."
-    else
-      warn "Unknown Tol-barad status: #{tb_data['status']}"
-      "... Actually I don't know."
+      warn "Tol'barad data missing; skipping."
+      tb = "Tol'barad data is unavilable. :shield:"
     end
 
     return "#{updown} #{wg} #{tb}"
