@@ -44,7 +44,8 @@ module BNet
 
     begin
       char_data = @@api.character rlm, char, :fields => "appearance"
-      event.send_message "#{event.user.mention} http://render-api-eu.worldofwarcraft.com/static-render/eu/#{char_data["thumbnail"]}"
+      event.send_message \
+        "#{event.user.mention} http://render-api-eu.worldofwarcraft.com/static-render/eu/#{char_data["thumbnail"]}"
     rescue Battlenet::ApiException => ex
       if ex.code == 404
         event.send_message "#{event.user.mention} I couldn't find that player. Is your spelling correct?"
