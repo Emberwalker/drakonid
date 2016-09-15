@@ -37,3 +37,7 @@ build/
 
 # Dirty sekrits
 /config.json
+/bnet.json
+
+# RubyMine
+/.idea/

@@ -34,8 +34,8 @@ end
 # Main
 config = load_config
 BNet.init(config[BNET_PRIVATE_KEY])
-bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY], application_id: config[DISCORD_APP_ID_KEY].to_i,
-  prefix: COMMAND_PREFIX)
+bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY],
+                                          application_id: config[DISCORD_APP_ID_KEY].to_i, prefix: COMMAND_PREFIX)
 bot.include! Base
 bot.include! BNet
 

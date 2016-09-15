@@ -1,0 +1,10 @@
+{
+    "region": "eu",
+    "realm": "Argent Dawn",
+    "wait_msgs": [
+        "Let me look that up. One moment...",
+        "Consulting the oracle for you...",
+        "Huh? You sure? Alright, fine. One second...",
+        "Why would you want that? 'kay, moment..."
+    ]
+}
