@@ -6,6 +6,7 @@
 require 'json'
 require 'discordrb'
 require_relative 'logging'
+require_relative 'util/permissions'
 require_relative 'plugins/base'
 require_relative 'plugins/bnet'
 
@@ -13,6 +14,7 @@ require_relative 'plugins/bnet'
 DISCORD_APP_ID_KEY = "discord_app_id"
 DISCORD_TOKEN_KEY = "discord_token"
 BNET_PRIVATE_KEY = "battlenet_token"
+GLOBAL_ADMIN_KEY = "global_administrator"
 COMMAND_PREFIX = "!"
 
 def load_config()
@@ -33,7 +35,10 @@ end
 
 # Main
 config = load_config
+Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
+Permissions.load_from_disk
 BNet.init(config[BNET_PRIVATE_KEY])
+
 bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY],
                                           application_id: config[DISCORD_APP_ID_KEY].to_i, prefix: COMMAND_PREFIX)
 bot.include! Base

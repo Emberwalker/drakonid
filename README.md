@@ -6,3 +6,8 @@ Edit the following link, replacing `CLIENT_ID` with your app ID.
 ```
 https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=76800
 ```
+
+## Setting Global Administrator
+The Global Administrator is the assigned 'owner' of the bot, with all-access admin rights in addition to privileged
+management commands, such as `!stop`. To get the ID, enable Developer Mode in Discord and right-click the user, and
+select `Copy ID`.

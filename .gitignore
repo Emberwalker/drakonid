@@ -38,6 +38,7 @@ build/
 # Dirty sekrits
 /config.json
 /bnet.json
+/ranks.json
 
 # RubyMine
 /.idea/
