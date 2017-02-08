@@ -1,6 +1,7 @@
 require 'battlenet'
 require 'json'
 require 'discordrb'
+require_relative '../util/permissions'
 require_relative '../logging'
 
 # noinspection RubyClassVariableUsageInspection, RubyJumpError, RubyClassVariableNamingConvention
@@ -29,16 +30,18 @@ module BNet
   bucket :bnet_reload, limit: 1, time_span: 120, delay: 60
 
   command :bnet_reload, bucket: :bnet_reload do |event|
-    return "#{event.user.mention} I would, but I don't seem to have any API keys. " +
+    next "#{event.user.mention} I would, but I don't seem to have any API keys. " +
         'Add those to the config and reboot the bot.' unless @@api
+    next "#{event.user.mention} :warning: You don't have permission for this command (superuser or above)" unless
+        Permissions.check_permission(event.server, event.user, :superuser)
     event.send_message "Reloading Battle.net data resources at request of #{event.user.mention} - this may take a moment."
     begin
       loaded_resources = load_data_resources
-      event.send_message "#{event.user.mention} Reload succeeded. Resources reloaded: #{loaded_resources}"
+      next "#{event.user.mention} Reload succeeded. Resources reloaded: #{loaded_resources}"
     rescue Battlenet::ApiException
-      event.send_message "#{event.user.mention} Reload failed due to Battle.net API exception. Check the system logs."
+      next "#{event.user.mention} Reload failed due to Battle.net API exception. Check the system logs."
     rescue Exception => ex
-      event.send_message "#{event.user.mention} Reload failed due to an exception of type #{ex.class.name}. Check the system logs."
+      next "#{event.user.mention} Reload failed due to an exception of type #{ex.class.name}. Check the system logs."
     end
   end
 
