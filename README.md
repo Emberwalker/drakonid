@@ -11,3 +11,7 @@ https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permission
 The Global Administrator is the assigned 'owner' of the bot, with all-access admin rights in addition to privileged
 management commands, such as `!stop`. To get the ID, enable Developer Mode in Discord and right-click the user, and
 select `Copy ID`.
+
+## Running on Windows
+The required files for voice support are now bundled in the repository. Run `drakonid_windows.rb` instead of
+`drakonid.rb` to get the voice comms goodness.
