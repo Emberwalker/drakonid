@@ -4,12 +4,6 @@ require_relative '../util/permissions'
 module Base
   extend Discordrb::Commands::CommandContainer
 
-  bucket :ping, limit: 3, time_span: 60, delay: 5
-
-  command :ping, bucket: :ping do |event|
-    "#{event.user.mention} Pong!"
-  end
-
   command :stop do |event|
     if Permissions.check_global_administrator event.user
       event.send_message "#{event.user.mention} Shutting down..."

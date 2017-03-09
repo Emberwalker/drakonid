@@ -39,6 +39,7 @@ build/
 /config.json
 /bnet.json
 /ranks.json
+/announces.json
 
 # RubyMine
 /.idea/
