@@ -26,11 +26,13 @@ module Snark
   end
 
   def Snark.set_server_snark(server, snark)
+    return unless server
     @__server_snark[server.id.to_s] = snark
     save_to_disk
   end
 
   def Snark.get_server_snark(server)
+    return SNARK_DEFAULT unless server
     return @__server_snark[server.id.to_s] if @__server_snark[server.id.to_s]
     return SNARK_DEFAULT
   end

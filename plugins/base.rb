@@ -17,6 +17,7 @@ module Base
   command :permset do |event, _usr_raw, rank_raw|
     rank_raw.downcase!
     next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :administrator)
+    next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
     next "#{event.user.mention} That permission level doesn't exist." unless Permissions.rank_exists? rank_raw
     rank = rank_raw.to_sym
     mentions = event.message.mentions
@@ -27,6 +28,7 @@ module Base
 
   command :snarkpls do |event|
     next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :superuser)
+    next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
     Snark.set_server_snark(event.server, true)
     next Snark.snrk(event.server, '@USER@ Snark enabled.', [
       '@USER@ Pff. Fine. Expect much sarcasm from now on...',
@@ -37,6 +39,7 @@ module Base
 
   command :wehatefun do |event|
     next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :superuser)
+    next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
     Snark.set_server_snark(event.server, false)
     next "#{event.user.mention} Snark disabled."
   end
