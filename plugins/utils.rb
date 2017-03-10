@@ -1,7 +1,9 @@
 require 'discordrb'
 require 'json'
 require_relative '../util/permissions'
+require_relative '../util/snark'
 
+# noinspection RubyStringKeysInHashInspection
 module Utils
   extend Discordrb::Commands::CommandContainer
   extend Discordrb::EventContainer
@@ -57,7 +59,12 @@ module Utils
     if ann_target
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
       if ch
-        ch.send_message "@everyone #{event.user.mention} has joined the server!"
+        ch.send_message(Snark.snrk(event.server, '@everyone @USER@ has joined the server!', [
+            '@everyone We\'ve got a new sucker! I mean, user: @USER@',
+            '@everyone Oh look. Another person. Greeaaat. @USER@',
+            '@everyone @USER@ is providing more blood for the Discord blood god! By joining the server, that is.',
+            '@everyone Let\'s hope the new person is actually interesting this time... @USER@'
+        ], {'@USER' => event.user.mention}))
       end
     end
   end

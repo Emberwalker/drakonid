@@ -40,6 +40,7 @@ build/
 /bnet.json
 /ranks.json
 /announces.json
+/snark.json
 
 # RubyMine
 /.idea/

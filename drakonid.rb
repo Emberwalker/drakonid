@@ -7,6 +7,7 @@ require 'json'
 require 'discordrb'
 require_relative 'logging'
 require_relative 'util/permissions'
+require_relative 'util/snark'
 require_relative 'plugins/base'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
@@ -38,6 +39,7 @@ end
 config = load_config
 Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
 Permissions.load_from_disk
+Snark.load_from_disk
 Utils.load_announces
 BNet.init(config[BNET_PRIVATE_KEY])
 
