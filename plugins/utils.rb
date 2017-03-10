@@ -64,7 +64,7 @@ module Utils
             '@everyone Oh look. Another person. Greeaaat. @USER@',
             '@everyone @USER@ is providing more blood for the Discord blood god! By joining the server, that is.',
             '@everyone Let\'s hope the new person is actually interesting this time... @USER@'
-        ], {'@USER' => event.user.mention}))
+        ], {'@USER@' => event.user.mention}))
       end
     end
   end
