@@ -11,6 +11,7 @@ require_relative 'util/snark'
 require_relative 'plugins/base'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
+require_relative 'plugins/condenser'
 
 # Constants
 DISCORD_APP_ID_KEY = 'discord_app_id'
@@ -42,11 +43,13 @@ Permissions.load_from_disk
 Snark.load_from_disk
 Utils.load_announces
 BNet.init(config[BNET_PRIVATE_KEY])
+Condenser.load_from_disk
 
 bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY],
                                           application_id: config[DISCORD_APP_ID_KEY].to_i, prefix: COMMAND_PREFIX)
 bot.include! Base
 bot.include! Utils
 bot.include! BNet
+bot.include! Condenser
 
 bot.run

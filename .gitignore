@@ -41,6 +41,7 @@ build/
 /ranks.json
 /announces.json
 /snark.json
+/condenser.json
 
 # RubyMine
 /.idea/

@@ -8,7 +8,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    discordrb (3.2.0.1)
+    discordrb (3.2.1)
       discordrb-webhooks (~> 3.2.0.1)
       opus-ruby
       rbnacl (~> 3.4.0)
@@ -16,11 +16,11 @@ GEM
       websocket-client-simple (>= 0.3.0)
     discordrb-webhooks (3.2.0.1)
       rest-client
-    domain_name (0.5.20161129)
+    domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.5)
-    ffi (1.9.17)
-    ffi (1.9.17-x86-mingw32)
+    ffi (1.9.18)
+    ffi (1.9.18-x86-mingw32)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httparty (0.14.0)
@@ -34,11 +34,11 @@ GEM
       ffi
     rbnacl (3.4.0)
       ffi
-    rest-client (2.0.0)
+    rest-client (2.0.1)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rest-client (2.0.0-x86-mingw32)
+    rest-client (2.0.1-x86-mingw32)
       ffi (~> 1.9)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -59,6 +59,7 @@ PLATFORMS
 DEPENDENCIES
   battlenet!
   discordrb (~> 3.2.0)
+  httparty (~> 0.14.0)
 
 BUNDLED WITH
    1.14.3
