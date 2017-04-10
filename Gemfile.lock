@@ -16,7 +16,7 @@ GEM
       websocket-client-simple (>= 0.3.0)
     discordrb-webhooks (3.2.0.1)
       rest-client
-    domain_name (0.5.20170223)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.5)
     ffi (1.9.18)

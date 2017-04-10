@@ -10,6 +10,7 @@ module Base
     if Permissions.check_global_administrator event.user
       event.send_message "#{event.user.mention} Shutting down..."
       event.bot.stop
+      next
     end
     "#{event.user.mention} You don't have permission to do that."
   end
