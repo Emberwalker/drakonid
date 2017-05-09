@@ -54,14 +54,17 @@ module BNet
     "#{event.user.mention} #{get_realm_status(rlm)}"
   end
 
-  command :showme, bucket: :showme do |event, char, *realm|
+  command :showme, bucket: :showme do |event, type, char, *realm|
+    type.downcase!
+    if type != 'avatar' and type != 'large'
+      next "#{event.user.mention} What type of image do you need? (usage: !showme [avatar/large] <name> <realm> - realm is optional)"
+    end
+
     if char == '' || !char
-      event.send_message "#{event.user.mention} Show you... who? (usage: !showme <name> <realm> - realm is optional)"
-      return
+      next "#{event.user.mention} Show you... who? (usage: !showme [avatar/large] <name> <realm> - realm is optional)"
     end
     unless @@api
-      event.send_message "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:"
-      return
+      next "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:"
     end
 
     debug "showme/#{char}/#{realm.join ' '}"
@@ -71,9 +74,13 @@ module BNet
     rlm = realm.join ' ' unless realm.empty?
 
     begin
-      char_data = @@api.character rlm, char, :fields => "appearance"
-      event.send_message \
-        "#{event.user.mention} http://render-api-eu.worldofwarcraft.com/static-render/eu/#{char_data["thumbnail"]}"
+      char_data = @@api.character rlm, char, :fields => 'appearance'
+      base_msg = "#{event.user.mention} https://render-eu.worldofwarcraft.com/character/"
+      char_path = char_data['thumbnail']
+      if type == 'large'
+        char_path.gsub! 'avatar', 'main'
+      end
+      next base_msg + char_path
     rescue Battlenet::ApiException => ex
       if ex.code == 404
         event.send_message "#{event.user.mention} I couldn't find that player. Is your spelling correct?"
