@@ -54,6 +54,23 @@ module Permissions
     urank >= trank
   end
 
+  def Permissions.get_all_for_user(bot, user)
+    out = {}
+    if Permissions::check_global_administrator user
+      bot.servers.each { |srv_id, _|
+        out[srv_id] = :administrator
+      }
+      return out
+    end
+
+    @__current_ranks.each { |srv_id, srv_ranks|
+      srv_ranks.each { |uid, rank|
+        out[srv_id.to_i] = rank if rank != :user && uid == user.id.to_s
+      }
+    }
+    out
+  end
+
   def Permissions.check_global_administrator(user)
     user.id == @__global_admin
   end

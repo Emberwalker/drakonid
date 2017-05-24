@@ -21,6 +21,7 @@ GEM
     event_emitter (0.2.5)
     ffi (1.9.18)
     ffi (1.9.18-x86-mingw32)
+    fuzzy_match (2.1.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httparty (0.14.0)
@@ -59,6 +60,7 @@ PLATFORMS
 DEPENDENCIES
   battlenet!
   discordrb (~> 3.2.0)
+  fuzzy_match (~> 2.1)
   httparty (~> 0.14.0)
 
 BUNDLED WITH
