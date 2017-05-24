@@ -54,6 +54,15 @@ module Utils
     next "#{event.user.mention} :electric_plug: Disconnected announcements on this server."
   end
 
+  command :rmhist do |event, amount|
+    next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :superuser)
+    next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
+    amount = amount.to_i + 1  # Add 1 to account for the request itself.
+    next "#{event.user.mention} Amount of messages to delete must be a number between 1 and 99." if amount < 2 || amount > 100
+    event.channel.prune(amount)
+    next "#{event.user.mention} has cleared up to #{amount - 1} messages from the channel. Older messages (2 weeks or older) have not been touched."
+  end
+
   member_join do |event|
     ann_target = @__announce_config[event.server.id.to_s]
     if ann_target

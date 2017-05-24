@@ -5,6 +5,7 @@
 
 require 'json'
 require 'discordrb'
+require_relative 'patches'
 require_relative 'logging'
 require_relative 'util/permissions'
 require_relative 'util/snark'
