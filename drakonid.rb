@@ -13,6 +13,7 @@ require_relative 'plugins/base'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
 require_relative 'plugins/condenser'
+require_relative 'plugins/quotes'
 
 # Constants
 DISCORD_APP_ID_KEY = 'discord_app_id'
@@ -43,6 +44,7 @@ Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
 Permissions.load_from_disk
 Snark.load_from_disk
 Utils.load_announces
+Quotes.load_quotes
 BNet.init(config[BNET_PRIVATE_KEY])
 Condenser.load_from_disk
 
@@ -52,5 +54,6 @@ bot.include! Base
 bot.include! Utils
 bot.include! BNet
 bot.include! Condenser
+bot.include! Quotes
 
 bot.run

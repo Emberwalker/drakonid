@@ -36,12 +36,7 @@ build/
 .rvmrc
 
 # Dirty sekrits
-/config.json
-/bnet.json
-/ranks.json
-/announces.json
-/snark.json
-/condenser.json
+/*.json
 
 # RubyMine
 /.idea/

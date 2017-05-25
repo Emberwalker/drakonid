@@ -43,6 +43,7 @@ module Permissions
     unless RANKS.find_index rank
       raise ArgumentError "invalid rank #{rank}"
     end
+    return __pm_permission_check user, rank unless server
     user_rank = nil
     serv_ranks = @__current_ranks[server.id.to_s]
     if serv_ranks
@@ -51,6 +52,19 @@ module Permissions
     user_rank = :user unless user_rank
     urank = RANKS.find_index(user_rank.to_sym)
     trank = RANKS.find_index(rank)
+    urank >= trank
+  end
+
+  def Permissions.__pm_permission_check(user, req_rank)
+    highest_rank = :user
+    @__current_ranks.each_value { |serv|
+      rank = serv[user.id.to_s]
+      next unless rank
+      highest_rank = rank.to_sym if RANKS.find_index(highest_rank) < RANKS.find_index(rank.to_sym)
+    }
+
+    urank = RANKS.find_index(highest_rank)
+    trank = RANKS.find_index(req_rank)
     urank >= trank
   end
 
