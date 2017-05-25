@@ -1,28 +1,19 @@
 require 'json'
 require_relative '../logging'
+require_relative 'files'
 
 module Snark
   SNARK_DEFAULT = false
+  JSON_FILE_NAME = 'snark'
   @__server_snark = {}
 
   def Snark.load_from_disk
-    if File.exists? 'snark.json'
-      begin
-        File.open('snark.json') { |f|
-          @__server_snark = JSON.load f
-        }
-      rescue Exception => ex
-        warn "Exception parsing snark JSON: #{ex}"
-      end
-    end
+    @__server_snark = JSONFiles.load_file JSON_FILE_NAME
     debug "Loaded snark config for #{@__server_snark.length} servers. Sarcastic yay."
   end
 
   def Snark.save_to_disk
-    raw_json = JSON.pretty_generate @__server_snark
-    File.open 'snark.json', mode: 'w' do |f|
-      f.write raw_json
-    end
+    JSONFiles.save_file JSON_FILE_NAME, @__server_snark
   end
 
   def Snark.set_server_snark(server, snark)

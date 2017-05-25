@@ -4,6 +4,7 @@ require 'json'
 require 'time'
 require_relative '../util/permissions'
 require_relative '../util/snark'
+require_relative '../util/files'
 
 # Support for the Condenser link shortener (https://github.com/Emberwalker/condenser)
 # noinspection RubyClassVariableUsageInspection, RubyJumpError, RubyClassVariableNamingConvention
@@ -70,14 +71,8 @@ module Condenser
   end
 
   def self.load_from_disk
-    begin
-      raw = File.read 'condenser.json'
-      @conf = JSON.parse raw
-      update_httparty_service
-    rescue Exception => ex
-      warn "Couldn't load condenser.json; assuming defaults: #{ex.message}"
-      @conf = {}
-    end
+    @conf = JSONFiles.load_file JSON_FILE_NAME
+    update_httparty_service
   end
 
   private
@@ -85,6 +80,8 @@ module Condenser
   @@API_KEY = 'api_key'
   @conf = {}
   @service = nil
+
+  JSON_FILE_NAME = 'condenser'
 
   def self.is_config_valid
     @conf[@@SERVER_KEY] && @conf[@@API_KEY]

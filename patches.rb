@@ -3,9 +3,6 @@
 
 module Discordrb
   class Channel
-    # For bulk_delete checking
-    TWO_WEEKS = 86_400 * 14
-
     # Deletes a list of messages on this channel using bulk delete
     def bulk_delete(ids, strict = false)
       min_snowflake = IDObject.synthesise(Time.now - TWO_WEEKS)

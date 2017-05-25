@@ -1,32 +1,22 @@
 require 'discordrb'
-require 'json'
 require_relative '../util/permissions'
 require_relative '../util/snark'
+require_relative '../util/files'
 
 # noinspection RubyStringKeysInHashInspection
 module Utils
   extend Discordrb::Commands::CommandContainer
   extend Discordrb::EventContainer
 
+  JSON_FILE_NAME = 'announces'
   @__announce_config = {}
 
   def self.load_announces
-    begin
-      File.open 'announces.json', 'r' do |f|
-        raw = f.read
-        @__announce_config = JSON.parse raw
-      end
-    rescue Exception => ex
-      warn "Couldn't load announces.json; assuming empty: #{ex.message}"
-      @__announce_config = {}
-    end
+    @__announce_config = JSONFiles.load_file JSON_FILE_NAME
   end
 
   def self.save_announces
-    raw_json = JSON.pretty_generate @__announce_config
-    File.open 'announces.json', mode: 'w' do |f|
-      f.write raw_json
-    end
+    JSONFiles.save_file JSON_FILE_NAME, @__announce_config
   end
 
   bucket :ping, limit: 3, time_span: 60, delay: 5
