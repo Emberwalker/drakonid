@@ -64,13 +64,13 @@ module Base
       member_lists = srvs.map { |srv| srv.members }
 
       reply_func = -> evt {
-        msg = event.message
-        if evt.message.text.downcase == 'abort'
+        msg = evt.message
+        if msg.text.downcase == 'abort'
           msg.reply "#{evt.user.mention} Okay. No changes have been made."
           return true
         end
 
-        ans = evt.message.text.to_i
+        ans = msg.text.to_i
         if ans > 0 && ans <= srvs.size
           srv = srvs[ans - 1]
           members = member_lists[ans - 1]
