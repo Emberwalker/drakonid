@@ -9,6 +9,7 @@ require_relative 'patches'
 require_relative 'logging'
 require_relative 'util/permissions'
 require_relative 'util/snark'
+require_relative 'util/server_conf'
 require_relative 'plugins/base'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
@@ -42,7 +43,7 @@ end
 config = load_config
 Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
 Permissions.load_from_disk
-Snark.load_from_disk
+ServerConf.load_from_disk
 Utils.load_announces
 Quotes.load_quotes
 BNet.init(config[BNET_PRIVATE_KEY])
