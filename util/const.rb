@@ -10,8 +10,9 @@ module Const
   end
 
   SVAR_ALLOW_CENSUS = Const::SVarSpec.new('census_allow_normal_users', 'Allow all users to use !census', true)
+  SVAR_ALLOW_SHOWME = Const::SVarSpec.new('showme_allow_normal_users', 'Allow all users to use !showme', true)
   SVAR_ALLOW_QUOTES = Const::SVarSpec.new('quotes_allow_normal_user', 'Allow all users to use !quotes', true)
   SVAR_USE_SNARK = Const::SVarSpec.new('snark_enabled', 'Enable snarky responses', false)
 
-  ALL_SVARS = [SVAR_ALLOW_CENSUS, SVAR_ALLOW_QUOTES, SVAR_USE_SNARK]
+  ALL_SVARS = [SVAR_ALLOW_CENSUS, SVAR_ALLOW_SHOWME, SVAR_ALLOW_QUOTES, SVAR_USE_SNARK]
 end

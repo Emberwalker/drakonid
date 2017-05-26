@@ -20,6 +20,10 @@ module ServerConf
     srv_conf.fetch(key, default)
   end
 
+  def ServerConf.get_svar(server, svar)
+    get(server, svar.internal, svar.default)
+  end
+
   def ServerConf.set(server, key, value)
     return delete(server, key) if value.nil?
     srv_conf = @__server_confs.fetch(server.id.to_s, {})

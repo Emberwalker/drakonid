@@ -85,6 +85,12 @@ module Permissions
     out
   end
 
+  def Permissions.get_all_for_user_ranked(bot, user, min_rank)
+    get_all_for_user(bot, user)
+        .select { |_, rank| RANKS.find_index(rank) >= RANKS.find_index(min_rank) }
+        .map { |sid, _| bot.servers[sid.to_i] }
+  end
+
   def Permissions.check_global_administrator(user)
     user.id == @__global_admin
   end

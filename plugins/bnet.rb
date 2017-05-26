@@ -2,6 +2,8 @@ require 'battlenet'
 require 'json'
 require 'discordrb'
 require_relative '../util/permissions'
+require_relative '../util/const'
+require_relative '../util/server_conf'
 require_relative '../logging'
 
 # noinspection RubyClassVariableUsageInspection, RubyJumpError, RubyClassVariableNamingConvention
@@ -55,6 +57,10 @@ module BNet
   end
 
   command :showme, bucket: :showme do |event, type, char, *realm|
+    if event.server && !ServerConf.get_svar(event.server, Const::SVAR_ALLOW_SHOWME)
+      next unless Permissions.check_permission(event.server, event.user, :superuser)
+    end
+
     type.downcase!
     if type != 'avatar' and type != 'large'
       next "#{event.user.mention} What type of image do you need? (usage: !showme [avatar/large] <name> <realm> - realm is optional)"
@@ -92,6 +98,10 @@ module BNet
   end
 
   command :census, bucket: :census do |event, *data|
+    if event.server && !ServerConf.get_svar(event.server, Const::SVAR_ALLOW_CENSUS)
+      next unless Permissions.check_permission(event.server, event.user, :superuser)
+    end
+
     if data.empty?
       event.send_message "#{event.user.mention} Gather census data for whom?\n" +
         "If you want a custom realm and base rank: `!census Realm Name 9 Guild Name`\n" +

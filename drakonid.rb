@@ -11,6 +11,7 @@ require_relative 'util/permissions'
 require_relative 'util/snark'
 require_relative 'util/server_conf'
 require_relative 'plugins/base'
+require_relative 'plugins/svars'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
 require_relative 'plugins/condenser'
@@ -52,6 +53,7 @@ Condenser.load_from_disk
 bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY],
                                           application_id: config[DISCORD_APP_ID_KEY].to_i, prefix: COMMAND_PREFIX)
 bot.include! Base
+bot.include! SVars
 bot.include! Utils
 bot.include! BNet
 bot.include! Condenser

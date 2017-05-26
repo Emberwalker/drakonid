@@ -1,7 +1,5 @@
 require 'discordrb'
-require_relative '../util/permissions'
-require_relative '../util/files'
-require_relative '../util/conversations'
+require_relative '../util/utils'
 
 module Quotes
   extend Discordrb::Commands::CommandContainer
@@ -22,6 +20,10 @@ module Quotes
   end
 
   command :quote do |event, *params|
+    if event.server && !ServerConf.get_svar(event.server, Const::SVAR_ALLOW_QUOTES)
+      next unless Permissions.check_permission(event.server, event.user, :superuser)
+    end
+
     next if params.size == 0
     p0 = params[0].downcase
     if params.size == 1
