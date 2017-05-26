@@ -1,3 +1,4 @@
+require_relative 'chunker'
 require_relative 'const'
 require_relative 'conversations'
 require_relative 'files'

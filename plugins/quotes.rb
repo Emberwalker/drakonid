@@ -55,8 +55,10 @@ module Quotes
         category = @__quotes[@__aliases[cname]] unless category
         next "#{event.user.mention} :mag: I don't know the category '#{cname}'." unless category
 
-        event << "#{event.user.mention} Quotes in category '#{cname}':"
-        category.each { |q| event << "- \"#{q}\"" }
+        chunker = Chunker.new
+        chunker << "#{event.user.mention} Quotes in category '#{cname}':"
+        category.each { |q| chunker << "- \"#{q}\"" }
+        chunker.send(event)
       elsif (p0 == 'rm' || p0 == 'delete') && params.size >= 2
         next rm_quote(event, params)
       end
@@ -134,8 +136,10 @@ module Quotes
     end
     return "#{event.user.mention} :mag: I don't know the category '#{cname}'." unless category
 
-    event << "#{event.user.mention} Listing quotes in category '#{cname}' - Reply with the number of the quote to delete, or 'abort' to cancel:"
-    category.each_with_index { |quote, i| event << "#{i + 1}. \"#{quote}\"" }
+    chunker = Chunker.new
+    chunker << "#{event.user.mention} Listing quotes in category '#{cname}' - Reply with the number of the quote to delete, or 'abort' to cancel:"
+    category.each_with_index { |quote, i| chunker << "#{i + 1}. \"#{quote}\"" }
+    chunker.send(event)
 
     await_func = Conversations.numeric_conversation(category.size) { |evt, ans|
       quote = category[ans]
