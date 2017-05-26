@@ -91,6 +91,10 @@ module Permissions
         .map { |sid, _| bot.servers[sid.to_i] }
   end
 
+  def Permissions.get_all_for_server(server)
+    @__current_ranks[server.id.to_s].reject { |k, v| v == 'user' || k == '__server_name' }
+  end
+
   def Permissions.check_global_administrator(user)
     user.id == @__global_admin
   end

@@ -75,6 +75,36 @@ module Base
     end
   end
 
+  command :permlist do |event, *params|
+    srv = event.server
+    unless srv
+      srvs = Permissions.get_all_for_user_ranked(event.bot, event.user, :superuser)
+      next "#{event.user.mention} You aren't a superuser on any servers covered by this bot." if srvs.empty?
+      srv = srvs[0]
+      unless srvs.size == 1
+        next "#{event.user.mention} Which server do you want to list? (PM usage: `!permlist Server Name`)" if params.size == 0
+        fz = FuzzyMatch.new(srvs, :read => :name)
+        srv = fz.find(params.join(' '))
+        next "#{event.user.mention} I couldn't find any servers similar to '#{params.join(' ')}' - Check your input." unless srv
+      end
+    end
+
+    next "#{event.user.mention} :warning: You don't have permission to do that on '#{srv.name}'." unless Permissions.check_permission(srv, event.user, :superuser)
+
+    perms = Permissions.get_all_for_server(srv)
+    next "#{event.user.mention} There are no permissions defined for server '#{srv.name}'." if perms.size == 0
+    event << "#{event.user.mention} Permissions for server '#{srv.name}':"
+
+    perms = perms.sort_by { |uid, rank| [Permissions::RANKS.find_index(rank), uid.to_i] }
+    perms.each { |uid, rank|
+      member = srv.members.select {|m| m.id == uid.to_i}.first
+      next unless member
+      event << "- #{member.display_name}: #{rank}"
+    }
+
+    nil
+  end
+
   def self.__find_and_add_rank(requester, srv, members, usr_raw, rank, render_server = false)
     fz = FuzzyMatch.new(members, :read => :display_name)
     res = fz.find(usr_raw)
