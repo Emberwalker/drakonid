@@ -1,6 +1,7 @@
 require 'discordrb'
-require_relative '../util/../util/permissions'
+require_relative '../util/permissions'
 require_relative '../util/files'
+require_relative '../util/conversations'
 
 module Quotes
   extend Discordrb::Commands::CommandContainer
@@ -134,36 +135,25 @@ module Quotes
     event << "#{event.user.mention} Listing quotes in category '#{cname}' - Reply with the number of the quote to delete, or 'abort' to cancel:"
     category.each_with_index { |quote, i| event << "#{i + 1}. \"#{quote}\"" }
 
-    await_func = -> evt {
+    await_func = Conversations.numeric_conversation(category.size) { |evt, ans|
+      quote = category[ans]
       msg = evt.message
-      if msg.text.downcase == 'abort'
-        msg.reply "#{evt.user.mention} Okay. No changes have been made."
+      unless @__quotes[cname]
+        msg.reply "#{evt.user.mention} The category seems to have disappeared between the start of the session and now. Try again."
         return true
       end
+      @__quotes[cname].delete(quote)
+      msg.reply "#{evt.user.mention} Quote #{ans + 1} (\"#{quote}\") deleted from category '#{cname}'."
 
-      ans = msg.text.to_i
-      if ans > 0 && ans <= category.size
-        quote = category[ans - 1]
-        unless @__quotes[cname]
-          msg.reply "#{evt.user.mention} The category seems to have disappeared between the start of the session and now. Try again."
-          return true
-        end
-        @__quotes[cname].delete(quote)
-        msg.reply "#{evt.user.mention} Quote #{ans} (\"#{quote}\") deleted from category '#{cname}'."
-
-        if @__quotes[cname].size == 0
-          @__quotes.delete(cname)
-          @__aliases.reject! { |_, v| v == cname }
-          msg.reply "#{evt.user.mention} Category '#{cname}' exhausted. Removing category and matching aliases."
-        end
-
-        save_quotes
-        return true
-      else
-        msg.reply "#{evt.user.mention} I didn't catch that. Select a number from above, or answer 'abort' to cancel."
-        return false
+      if @__quotes[cname].size == 0
+        @__quotes.delete(cname)
+        @__aliases.reject! { |_, v| v == cname }
+        msg.reply "#{evt.user.mention} Category '#{cname}' exhausted. Removing category and matching aliases."
       end
+
+      save_quotes
     }
+
     event.message.await("rmquote_#{event.user.name}", &await_func)
     return nil
   end

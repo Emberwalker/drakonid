@@ -2,6 +2,7 @@ require 'discordrb'
 require 'fuzzy_match'
 require_relative '../util/permissions'
 require_relative '../util/snark'
+require_relative '../util/conversations'
 
 # noinspection RubyStringKeysInHashInspection
 module Base
@@ -63,23 +64,10 @@ module Base
       # We cache the member lists as fetching them inexplicably fails in the await.
       member_lists = srvs.map { |srv| srv.members }
 
-      reply_func = -> evt {
-        msg = evt.message
-        if msg.text.downcase == 'abort'
-          msg.reply "#{evt.user.mention} Okay. No changes have been made."
-          return true
-        end
-
-        ans = msg.text.to_i
-        if ans > 0 && ans <= srvs.size
-          srv = srvs[ans - 1]
-          members = member_lists[ans - 1]
-          msg.reply __find_and_add_rank(evt.user, srv, members, usr_raw, rank, true)
-          return true
-        else
-          msg.reply "#{evt.user.mention} I didn't catch that. Select a number from above, or answer 'abort' to cancel."
-          return false
-        end
+      reply_func = Conversations.numeric_conversation(srvs.size) { |evt, ans|
+        srv = srvs[ans]
+        members = member_lists[ans]
+        evt.message.reply __find_and_add_rank(evt.user, srv, members, usr_raw, rank, true)
       }
 
       event.message.await("permset_#{event.user.name}", &reply_func)
