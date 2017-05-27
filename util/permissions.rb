@@ -1,14 +1,11 @@
 require 'json'
 require 'discordrb'
 require_relative '../logging'
+require_relative '../util/utils'
 
 module Permissions
 
-  RANKS = [
-      :user,
-      :superuser,
-      :administrator
-  ]
+  RANKS = Const::PERMISSION_RANKS
 
   @__ranks_stringified = RANKS.map { |sym| sym.to_s }
   @__global_admin = ''

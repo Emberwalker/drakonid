@@ -16,6 +16,7 @@ module ServerConf
   end
 
   def ServerConf.get(server, key, default = nil)
+    return default unless server
     srv_conf = @__server_confs.fetch(server.id.to_s, {})
     srv_conf.fetch(key, default)
   end
