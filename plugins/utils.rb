@@ -74,7 +74,7 @@ module Utils
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
       if ch
         # No snark here. Leaving is more serious.
-        ch.send_message('@everyone ' + event.user.nick + ' has left the server.')
+        ch.send_message('@everyone ' + event.user.distinct + ' has left the server.')
       end
     end
   end
