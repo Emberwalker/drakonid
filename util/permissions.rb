@@ -89,8 +89,10 @@ module Permissions
   end
 
   def Permissions.get_all_for_server(server)
-    @__current_ranks[server.id.to_s].reject { |k, v| v == 'user' || k == '__server_name' }
-        .map { |k, v| [k, v.to_sym] }.to_h
+    srv_ranks = @__current_ranks[server.id.to_s]
+    return srv_ranks.reject { |k, v| v == 'user' || k == '__server_name' }
+        .map { |k, v| [k, v.to_sym] }.to_h if srv_ranks
+    {} # Blank hash for non-existant servers.
   end
 
   def Permissions.check_global_administrator(user)
@@ -103,8 +105,17 @@ module Permissions
     serv_ranks = @__current_ranks[serv_id]
     serv_ranks = {} unless serv_ranks
     serv_ranks['__server_name'] = server.name
-    serv_ranks[user_id] = new_rank
-    @__current_ranks[serv_id] = serv_ranks
+    if new_rank == :user
+      serv_ranks.delete(user_id)
+    else
+      serv_ranks[user_id] = new_rank
+    end
+
+    if serv_ranks.size == 1 # only __server_name
+      @__current_ranks.delete(serv_id)
+    else
+      @__current_ranks[serv_id] = serv_ranks
+    end
     info "Updated permissions on server \"#{server.name}\" for user \"#{user.name}\" to #{new_rank}"
     save_to_disk
   end
