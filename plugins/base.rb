@@ -95,7 +95,6 @@ module Base
     next "#{event.user.mention} There are no permissions defined for server '#{srv.name}'." if perms.size == 0
     event << "#{event.user.mention} Permissions for server '#{srv.name}':"
 
-    debug "permlist/perms/#{perms}"
     perms = perms.sort_by { |uid, rank| [Permissions::RANKS.find_index(rank), uid.to_i] }
     perms.each { |uid, rank|
       member = srv.members.select {|m| m.id == uid.to_i}.first

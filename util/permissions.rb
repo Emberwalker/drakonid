@@ -55,7 +55,7 @@ module Permissions
   def Permissions.__pm_permission_check(user, req_rank)
     highest_rank = :user
     @__current_ranks.each_value { |serv|
-      rank = serv[user.id.to_s]
+      rank = serv[user.id.to_s].to_sym
       next unless rank
       highest_rank = rank.to_sym if RANKS.find_index(highest_rank) < RANKS.find_index(rank.to_sym)
     }
@@ -76,7 +76,7 @@ module Permissions
 
     @__current_ranks.each { |srv_id, srv_ranks|
       srv_ranks.each { |uid, rank|
-        out[srv_id.to_i] = rank if rank != :user && uid == user.id.to_s
+        out[srv_id.to_i] = rank.to_sym if rank != :user && uid == user.id.to_s
       }
     }
     out
@@ -90,6 +90,7 @@ module Permissions
 
   def Permissions.get_all_for_server(server)
     @__current_ranks[server.id.to_s].reject { |k, v| v == 'user' || k == '__server_name' }
+        .map { |k, v| [k, v.to_sym] }.to_h
   end
 
   def Permissions.check_global_administrator(user)
