@@ -55,8 +55,9 @@ module Permissions
   def Permissions.__pm_permission_check(user, req_rank)
     highest_rank = :user
     @__current_ranks.each_value { |serv|
-      rank = serv[user.id.to_s].to_sym
+      rank = serv[user.id.to_s]
       next unless rank
+      rank = rank.to_sym
       highest_rank = rank.to_sym if RANKS.find_index(highest_rank) < RANKS.find_index(rank.to_sym)
     }
 
