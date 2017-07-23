@@ -16,6 +16,7 @@ require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
 require_relative 'plugins/condenser'
 require_relative 'plugins/quotes'
+require_relative 'plugins/games'
 
 # Constants
 DISCORD_APP_ID_KEY = 'discord_app_id'
@@ -58,5 +59,6 @@ bot.include! Utils
 bot.include! BNet
 bot.include! Condenser
 bot.include! Quotes
+bot.include! Games
 
 bot.run

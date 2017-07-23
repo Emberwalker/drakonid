@@ -77,9 +77,19 @@ module SVars
   def self.svar_set(event, srv, svar, val_param)
     val_param.downcase!
 
-    val = val_param == 'true' || val_param == 'yes' || val_param == 'y'
-    ServerConf.set(srv, svar.internal, val)
+    if svar.type == :bool
+      val = val_param == 'true' || val_param == 'yes' || val_param == 'y'
+    elsif svar.type == :int
+      val = begin
+        Integer(val_param)
+      rescue ArgumentError
+        return "#{event.user.mention} :warning: Unable to read '#{val_param}' as an integer."
+      end
+    else
+      raise ArgumentError "Unknown svar type: #{svar.type}"
+    end
 
+    ServerConf.set(srv, svar.internal, val)
     return "#{event.user.mention} :wrench: Updated SVar #{svar.internal} (#{svar.human}) to #{val} for server '#{srv.name}'."
   end
 
