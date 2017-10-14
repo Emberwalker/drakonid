@@ -11,6 +11,7 @@ require_relative 'util/permissions'
 require_relative 'util/snark'
 require_relative 'util/server_conf'
 require_relative 'plugins/base'
+require_relative 'plugins/announcements'
 require_relative 'plugins/svars'
 require_relative 'plugins/utils'
 require_relative 'plugins/bnet'
@@ -19,11 +20,11 @@ require_relative 'plugins/quotes'
 require_relative 'plugins/games'
 
 # Constants
-DISCORD_APP_ID_KEY = 'discord_app_id'
-DISCORD_TOKEN_KEY = 'discord_token'
-BNET_PRIVATE_KEY = 'battlenet_token'
-GLOBAL_ADMIN_KEY = 'global_administrator'
-COMMAND_PREFIX = '!'
+DISCORD_APP_ID_KEY = 'discord_app_id'.freeze
+DISCORD_TOKEN_KEY = 'discord_token'.freeze
+BNET_PRIVATE_KEY = 'battlenet_token'.freeze
+GLOBAL_ADMIN_KEY = 'global_administrator'.freeze
+COMMAND_PREFIX = '!'.freeze
 
 def load_config
   begin
@@ -46,7 +47,7 @@ config = load_config
 Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
 Permissions.load_from_disk
 ServerConf.load_from_disk
-Utils.load_announces
+Announcements.load_announces
 Quotes.load_quotes
 BNet.init(config[BNET_PRIVATE_KEY])
 Condenser.load_from_disk
@@ -54,6 +55,7 @@ Condenser.load_from_disk
 bot = Discordrb::Commands::CommandBot.new(token: config[DISCORD_TOKEN_KEY],
                                           application_id: config[DISCORD_APP_ID_KEY].to_i, prefix: COMMAND_PREFIX)
 bot.include! Base
+bot.include! Announcements
 bot.include! SVars
 bot.include! Utils
 bot.include! BNet
