@@ -11,6 +11,8 @@ module Announcements
   @__join_leave_announce_config = {}
   @__stream_announce_config = {}
 
+  @__currently_streaming = Hash.new { |h, k| h[k] = Hash.new { false } }
+
   def self.load_announces
     @__join_leave_announce_config = JSONFiles.load_file JOIN_LEAVE_JSON_FILE_NAME
     @__stream_announce_config = JSONFiles.load_file STREAM_JSON_FILE_NAME
@@ -86,14 +88,29 @@ module Announcements
   end
 
   playing do |event|
+    sid = event.server.id.to_s
+    uid = event.user.id.to_s
+
+    if event.game.nil?
+      @__currently_streaming[sid][uid] = false
+      next
+    end
+
     # event.type 1 == streaming on Twitch
     # See http://www.rubydoc.info/gems/discordrb/Discordrb/Events/PlayingEvent
     next unless event.type == 1
-    next if event.game.nil?
     game = event.game
     url = event.url
 
-    ann_target = @__stream_announce_config[event.server.id.to_s]
+    # All to catch Twitch being crap and repeating the message at weird times...
+    if @__currently_streaming[sid][uid]
+      debug "BUG: User #{uid} (Server #{sid}) reported as streaming twice!"
+      next
+    end
+
+    @__currently_streaming[sid][uid] = true
+
+    ann_target = @__stream_announce_config[sid]
     if ann_target
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
       if ch
