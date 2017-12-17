@@ -37,6 +37,9 @@ module Condenser
     rescue CondenserException => ex
       warn "Error in shorten: #{ex.dbg}"
       next "#{event.user.mention} An error occurred: #{ex.human}"
+    rescue StandardError => ex
+      warn "Unhandled exception from Condenser service: #{ex}"
+      next "#{event.user.mention} An unknown error occurred. Ask the bot admin for help."
     end
     next "#{event.user.mention} #{shorturl}"
   end
@@ -50,6 +53,9 @@ module Condenser
     rescue CondenserException => ex
       warn "Error in meta: #{ex.dbg}"
       next "#{event.user.mention} An error occurred: #{ex.human}"
+    rescue StandardError => ex
+      warn "Unhandled exception from Condenser service: #{ex}"
+      next "#{event.user.mention} An unknown error occurred. Ask the bot admin for help."
     end
     event << "#{event.user.mention} Metadata for code #{code.upcase}:"
     event << "- Full URL: #{meta[:url]}"
@@ -71,6 +77,9 @@ module Condenser
     rescue CondenserException => ex
       warn "Error in del: #{ex.dbg}"
       next "#{event.user.mention} An error occurred: #{ex.human}"
+    rescue StandardError => ex
+      warn "Unhandled exception from Condenser service: #{ex}"
+      next "#{event.user.mention} An unknown error occurred. Ask the bot admin for help."
     end
 
     next "#{event.user.mention} Code '#{code.upcase}' did not exist." if ret[:status].casecmp('noexist').zero?
