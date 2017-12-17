@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'discordrb'
 require_relative '../util/utils'
 
@@ -6,8 +8,8 @@ module Announcements
   extend Discordrb::Commands::CommandContainer
   extend Discordrb::EventContainer
 
-  JOIN_LEAVE_JSON_FILE_NAME = 'announces'.freeze
-  STREAM_JSON_FILE_NAME = 'stream_announces'.freeze
+  JOIN_LEAVE_JSON_FILE_NAME = 'announces'
+  STREAM_JSON_FILE_NAME = 'stream_announces'
   @__join_leave_announce_config = {}
   @__stream_announce_config = {}
 
@@ -24,8 +26,11 @@ module Announcements
   end
 
   command :ann_set do |event|
-    next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :administrator)
-    next "#{event.user.mention} This has to be run in a server channel. PMs or group chats are invalid targets." if event.channel.private?
+    next "#{event.user.mention} :warning: You don't have permission to do that." unless
+        Permissions.check_permission(event.server, event.user, :administrator)
+    next "#{event.user.mention} This has to be run in a server channel. PMs or group chats are invalid targets." if
+        event.channel.private?
+
     sid = event.server.id.to_s
     cid = event.channel.id.to_s
     @__join_leave_announce_config[sid] = cid
@@ -34,8 +39,11 @@ module Announcements
   end
 
   command :sann_set do |event|
-    next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :administrator)
-    next "#{event.user.mention} This has to be run in a server channel. PMs or group chats are invalid targets." if event.channel.private?
+    next "#{event.user.mention} :warning: You don't have permission to do that." unless
+        Permissions.check_permission(event.server, event.user, :administrator)
+    next "#{event.user.mention} This has to be run in a server channel. PMs or group chats are invalid targets." if
+        event.channel.private?
+
     sid = event.server.id.to_s
     cid = event.channel.id.to_s
     @__stream_announce_config[sid] = cid
@@ -44,7 +52,8 @@ module Announcements
   end
 
   command :ann_del do |event|
-    next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :administrator)
+    next "#{event.user.mention} :warning: You don't have permission to do that." unless
+        Permissions.check_permission(event.server, event.user, :administrator)
     next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
 
     @__join_leave_announce_config.delete(event.server.id.to_s)
@@ -53,7 +62,8 @@ module Announcements
   end
 
   command :sann_del do |event|
-    next "#{event.user.mention} :warning: You don't have permission to do that." unless Permissions.check_permission(event.server, event.user, :administrator)
+    next "#{event.user.mention} :warning: You don't have permission to do that." unless
+        Permissions.check_permission(event.server, event.user, :administrator)
     next "#{event.user.mention} This has to be run in a server channel." if event.channel.private?
 
     @__stream_announce_config.delete(event.server.id.to_s)
@@ -65,14 +75,16 @@ module Announcements
     ann_target = @__join_leave_announce_config[event.server.id.to_s]
     if ann_target
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
-      if ch
-        ch.send_message(Snark.snrk(event.server, '@everyone @USER@ has joined the server!', [
-            '@everyone We\'ve got a new sucker! I mean, user: @USER@',
-            '@everyone Oh look. Another person. Greeaaat. @USER@',
-            '@everyone @USER@ is providing more blood for the Discord blood god! By joining the server, that is.',
-            '@everyone Let\'s hope the new person is actually interesting this time... @USER@'
-        ], {'@USER@' => event.user.mention}))
-      end
+      ch&.send_message(
+          Snark.snrk(event.server,
+                     '@everyone @USER@ has joined the server!',
+                     [
+                       '@everyone We\'ve got a new sucker! I mean, user: @USER@',
+                       '@everyone Oh look. Another person. Greeaaat. @USER@',
+                       '@everyone @USER@ is providing more blood for the Discord blood god! By joining the server,' \
+                       ' that is.',
+                       '@everyone Let\'s hope the new person is actually interesting this time... @USER@'
+                     ], '@USER@' => event.user.mention))
     end
   end
 
@@ -80,10 +92,7 @@ module Announcements
     ann_target = @__join_leave_announce_config[event.server.id.to_s]
     if ann_target
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
-      if ch
-        # No snark here. Leaving is more serious.
-        ch.send_message('@everyone ' + event.user.distinct + ' has left the server.')
-      end
+      ch&.send_message('@everyone ' + event.user.distinct + ' has left the server.')
     end
   end
 
@@ -113,9 +122,7 @@ module Announcements
     ann_target = @__stream_announce_config[sid]
     if ann_target
       ch = event.server.channels.select { |it| it.id.to_s == ann_target }.first
-      if ch
-        ch.send_message("#{event.user.mention} has started streaming \"#{game}\" on Twitch! #{url}")
-      end
+      ch&.send_message("#{event.user.mention} has started streaming \"#{game}\" on Twitch! #{url}")
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Const
   # Container classes
   class SVarSpec
@@ -12,17 +14,17 @@ module Const
   end
 
   # Permissions
-  PERMISSION_RANKS = [
-      :user,
-      :superuser,
-      :administrator
-  ]
+  PERMISSION_RANKS = %i[
+    user
+    superuser
+    administrator
+  ].freeze
 
   # SVars
-  SVARS_TYPES = [
-      :bool,
-      :int
-  ]
+  SVARS_TYPES = %i[
+    bool
+    int
+  ].freeze
 
   SVAR_ALLOW_CENSUS = Const::SVarSpec.new('census_allow_normal_users', 'Allow all users to use !census', true, :bool)
   SVAR_ALLOW_SHOWME = Const::SVarSpec.new('showme_allow_normal_users', 'Allow all users to use !showme', true, :bool)

@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 # Misc fixes for third-party code - yay monkey-patching!
 # Following code is copied from Discordrb but patched where marked.
+# rubocop:disable Style/Documentation
 
 module Discordrb
   class Channel
@@ -13,8 +16,7 @@ module Discordrb
         message = "Attempted to bulk_delete message #{e} which is too old (min = #{min_snowflake})"
         raise ArgumentError, message if strict
         Discordrb::LOGGER.warn(message)
-        Discordrb::LOGGER.warn('FIXME: Monkeypatch in patches.rb (Discordrb::Channel#bulk_delete). Submit patch upstream!')
-       #vvvvv This is where we patch - Discordrb returns false, which tells reject to KEEP the item. Change to true.
+        # v - This is where we patch - Discordrb returns false, which tells reject to KEEP the item. Change to true.
         true
       end
 
@@ -22,3 +24,5 @@ module Discordrb
     end
   end
 end
+
+# rubocop:enable Style/Documentation

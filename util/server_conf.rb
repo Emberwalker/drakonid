@@ -1,31 +1,34 @@
+# frozen_string_literal: true
+
 require 'json'
 require_relative 'files'
 
+##
+# Per-server configuration handling.
 module ServerConf
-
   JSON_FILE_NAME = 'server_conf'
 
   @__server_confs = {}
 
-  def ServerConf.load_from_disk
+  def self.load_from_disk
     @__server_confs = JSONFiles.load_file JSON_FILE_NAME
   end
 
-  def ServerConf.save_to_disk
+  def self.save_to_disk
     JSONFiles.save_file JSON_FILE_NAME, @__server_confs
   end
 
-  def ServerConf.get(server, key, default = nil)
+  def self.get(server, key, default = nil)
     return default unless server
     srv_conf = @__server_confs.fetch(server.id.to_s, {})
     srv_conf.fetch(key, default)
   end
 
-  def ServerConf.get_svar(server, svar)
+  def self.get_svar(server, svar)
     get(server, svar.internal, svar.default)
   end
 
-  def ServerConf.set(server, key, value)
+  def self.set(server, key, value)
     return delete(server, key) if value.nil?
     srv_conf = @__server_confs.fetch(server.id.to_s, {})
     srv_conf[key] = value
@@ -33,7 +36,7 @@ module ServerConf
     save_to_disk
   end
 
-  def ServerConf.delete(server, key)
+  def self.delete(server, key)
     srv_conf = @__server_confs.fetch(server.id.to_s, {})
     srv_conf.delete(key)
 
@@ -45,5 +48,4 @@ module ServerConf
 
     save_to_disk
   end
-
 end

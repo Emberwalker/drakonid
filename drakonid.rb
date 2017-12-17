@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 #
 # Drakonid - a simple Discord bot.
 #
@@ -20,18 +22,18 @@ require_relative 'plugins/quotes'
 require_relative 'plugins/games'
 
 # Constants
-DISCORD_APP_ID_KEY = 'discord_app_id'.freeze
-DISCORD_TOKEN_KEY = 'discord_token'.freeze
-BNET_PRIVATE_KEY = 'battlenet_token'.freeze
-GLOBAL_ADMIN_KEY = 'global_administrator'.freeze
-COMMAND_PREFIX = '!'.freeze
+DISCORD_APP_ID_KEY = 'discord_app_id'
+DISCORD_TOKEN_KEY = 'discord_token'
+BNET_PRIVATE_KEY = 'battlenet_token'
+GLOBAL_ADMIN_KEY = 'global_administrator'
+COMMAND_PREFIX = '!'
 
 def load_config
   begin
     raw = File.read 'config.json'
     config = JSON.parse raw
     debug(config.to_s)
-  rescue Exception => ex
+  rescue StandardError => ex
     fatal "Failed to read config: #{ex.message}"
   end
 
@@ -44,7 +46,7 @@ end
 
 # Main
 config = load_config
-Permissions.set_global_administrator(config[GLOBAL_ADMIN_KEY])
+Permissions.global_administrator = config[GLOBAL_ADMIN_KEY]
 Permissions.load_from_disk
 ServerConf.load_from_disk
 Announcements.load_announces

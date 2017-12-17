@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'battlenet'
 require 'json'
 require 'discordrb'
@@ -32,8 +34,10 @@ module BNet
   bucket :bnet_reload, limit: 1, time_span: 120, delay: 60
 
   command :bnet_reload, bucket: :bnet_reload do |event|
-    next "#{event.user.mention} I would, but I don't seem to have any API keys. " +
-        'Add those to the config and reboot the bot.' unless @@api
+    unless @@api
+      next "#{event.user.mention} I would, but I don't seem to have any API keys. " \
+        'Add those to the config and reboot the bot.'
+    end
     next "#{event.user.mention} :warning: You don't have permission for this command (superuser or above)" unless
         Permissions.check_permission(event.server, event.user, :superuser)
     event.send_message "Reloading Battle.net data resources at request of #{event.user.mention} - this may take a moment."
@@ -62,16 +66,14 @@ module BNet
     end
 
     type.downcase!
-    if type != 'avatar' and type != 'large'
+    if (type != 'avatar') && (type != 'large')
       next "#{event.user.mention} What type of image do you need? (usage: !showme [avatar/large] <name> <realm> - realm is optional)"
     end
 
     if char == '' || !char
       next "#{event.user.mention} Show you... who? (usage: !showme [avatar/large] <name> <realm> - realm is optional)"
     end
-    unless @@api
-      next "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:"
-    end
+    next "#{event.user.mention} I'm sorry #{event.user.name}, I don't have API keys! :cry:" unless @@api
 
     debug "showme/#{char}/#{realm.join ' '}"
     event.send_message @@wait_messages.sample
@@ -80,12 +82,10 @@ module BNet
     rlm = realm.join ' ' unless realm.empty?
 
     begin
-      char_data = @@api.character rlm, char, :fields => 'appearance'
+      char_data = @@api.character rlm, char, fields: 'appearance'
       base_msg = "#{event.user.mention} https://render-eu.worldofwarcraft.com/character/"
       char_path = char_data['thumbnail']
-      if type == 'large'
-        char_path.gsub! 'avatar', 'main'
-      end
+      char_path.gsub! 'avatar', 'main' if type == 'large'
       next base_msg + char_path
     rescue Battlenet::ApiException => ex
       if ex.code == 404
@@ -103,10 +103,10 @@ module BNet
     end
 
     if data.empty?
-      event.send_message "#{event.user.mention} Gather census data for whom?\n" +
-        "If you want a custom realm and base rank: `!census Realm Name 9 Guild Name`\n" +
-        "...Or just a custom base rank: `!census 9 Guild Name`\n" +
-        "...Or if you want a whole guild on the default server (#{@@current_realm}): `!census Guild Name`"
+      event.send_message "#{event.user.mention} Gather census data for whom?\n" \
+                         "If you want a custom realm and base rank: `!census Realm Name 9 Guild Name`\n" \
+                         "...Or just a custom base rank: `!census 9 Guild Name`\n" \
+                         "...Or if you want a whole guild on the default server (#{@@current_realm}): `!census Guild Name`"
       return
     end
 
@@ -120,9 +120,7 @@ module BNet
     if rank_index
       debug 'census/rank_provided'
       rank = data[rank_index].to_i
-      unless rank_index == 0
-        realm = data.take(rank_index).join(' ')
-      end
+      realm = data.take(rank_index).join(' ') unless rank_index == 0
       guild = data.drop(rank_index + 1).join(' ')
     else
       # Just the guild name
@@ -140,6 +138,7 @@ module BNet
   end
 
   private
+
   @@REGION_KEY = 'region'
   @@REALM_KEY = 'realm'
   @@WAIT_MESSAGES_KEY = 'wait_msgs'
@@ -147,19 +146,19 @@ module BNet
   @@REGION_DEFAULT = 'eu'
   @@REALM_DEFAULT = 'Argent Dawn'
 
-  @@PVP_FACTIONS = [:alliance, :horde, :neutral]
-  @@PVP_STATUS = [:idle, :populating, :active, :concluded, :unknown]
+  @@PVP_FACTIONS = %i[alliance horde neutral]
+  @@PVP_STATUS = %i[idle populating active concluded unknown]
 
   @@CHARACTER_GENDERS = {
-      0 => :male,
-      1 => :female
+    0 => :male,
+    1 => :female
   }
 
   @@WAIT_MESSAGES_DEFAULT = [
-      'Let me look that up. One moment...',
-      'Consulting the oracle for you...',
-      'Huh? You sure? Alright, fine. One second...',
-      "Why would you want that? 'kay, moment..."
+    'Let me look that up. One moment...',
+    'Consulting the oracle for you...',
+    'Huh? You sure? Alright, fine. One second...',
+    "Why would you want that? 'kay, moment..."
   ]
 
   @@current_realm = @@REALM_DEFAULT
@@ -181,7 +180,7 @@ module BNet
     conf[@@REGION_KEY] = @@REGION_DEFAULT unless conf[@@REGION_KEY]
     conf[@@REALM_KEY] = @@REALM_DEFAULT unless conf[@@REALM_KEY]
     conf[@@WAIT_MESSAGES_KEY] = @@WAIT_MESSAGES_DEFAULT unless conf[@@WAIT_MESSAGES_KEY]
-    return conf
+    conf
   end
 
   def self.load_data_resources
@@ -201,18 +200,18 @@ module BNet
       @race_ids = {}
       raw_races['races'].each do |race|
         @race_ids[race['id']] = {
-            :name => race['name'],
-            :mask => race['mask'],  # Just in case we need it later
-            :faction => race['side'].intern
+          name: race['name'],
+          mask: race['mask'], # Just in case we need it later
+          faction: race['side'].intern
         }
       end
       loaded_resources.push('races')
       @class_ids = {}
       raw_classes['classes'].each do |cls|
         @class_ids[cls['id']] = {
-            :name => cls['name'],
-            :mask => cls['mask'],
-            :power_type => cls['powerType']
+          name: cls['name'],
+          mask: cls['mask'],
+          power_type: cls['powerType']
         }
       end
       loaded_resources.push('classes')
@@ -221,31 +220,29 @@ module BNet
       raise ex
     end
     info "(Re)loaded Battle.net data resources #{loaded_resources}"
-    return loaded_resources
+    loaded_resources
   end
 
   def self.get_realm_status(realm)
-    begin
-      realm_data = @@api.realm['realms']
-      out_rlm = nil
-      realm_data.each { |rlm|
-        if rlm['name'] == realm
-          out_rlm = rlm
-          break
-        end
-      }
-      return "I couldn't find that realm, sorry!" unless out_rlm
-      begin
-        return __render_realm(out_rlm)
-      rescue Exception => ex
-        warn "Error rendering realm status: #{ex.inspect}"
-        warn "Offending response: #{out_rlm}"
-        return ":satellite: :boom: I've had some trouble producing that report. Sorry!"
+    realm_data = @@api.realm['realms']
+    out_rlm = nil
+    realm_data.each do |rlm|
+      if rlm['name'] == realm
+        out_rlm = rlm
+        break
       end
-    rescue Battlenet::ApiException => ex
-      warn "Failed to get realm status: #{ex.response}"
-      return ":satellite: :boom: I couldn't work out wtf Battle.net was smoking. Try again later!"
     end
+    return "I couldn't find that realm, sorry!" unless out_rlm
+    begin
+      return __render_realm(out_rlm)
+    rescue Exception => ex
+      warn "Error rendering realm status: #{ex.inspect}"
+      warn "Offending response: #{out_rlm}"
+      return ":satellite: :boom: I've had some trouble producing that report. Sorry!"
+    end
+  rescue Battlenet::ApiException => ex
+    warn "Failed to get realm status: #{ex.response}"
+    return ":satellite: :boom: I couldn't work out wtf Battle.net was smoking. Try again later!"
   end
 
   def self.__render_realm(realm)
@@ -261,26 +258,26 @@ module BNet
     wg_data = realm['wintergrasp']
     if wg_data
       wg += case @@PVP_FACTIONS[wg_data['controlling-faction']]
-      when :alliance
-        'the Alliance! '
-      when :horde
-        'the Horde! '
-      else
-        'nobody! '
+            when :alliance
+              'the Alliance! '
+            when :horde
+              'the Horde! '
+            else
+              'nobody! '
       end
       wg += 'Currently, the zone is'
       wg += case @@PVP_STATUS[wg_data['status']]
-      when :idle
-        ' uncontested.'
-      when :populating
-        ' waiting for players!'
-      when :active
-        ' at WAR! :crossed_swords:'
-      when :concluded
-        ' just finishing a battle.'
-      else
-        warn "Unknown Wintergrasp status: #{wg_data['status']}"
-        "... Actually I don't know."
+            when :idle
+              ' uncontested.'
+            when :populating
+              ' waiting for players!'
+            when :active
+              ' at WAR! :crossed_swords:'
+            when :concluded
+              ' just finishing a battle.'
+            else
+              warn "Unknown Wintergrasp status: #{wg_data['status']}"
+              "... Actually I don't know."
       end
     else
       warn 'Wintergrasp data missing; skipping.'
@@ -291,39 +288,39 @@ module BNet
     tb_data = realm['tol-barad']
     if tb_data
       tb += case @@PVP_FACTIONS[tb_data['controlling-faction']]
-      when :alliance
-        'the Alliance! '
-      when :horde
-        'the Horde! '
-      else
-        'nobody! '
+            when :alliance
+              'the Alliance! '
+            when :horde
+              'the Horde! '
+            else
+              'nobody! '
       end
       tb += 'Currently, the zone is'
       tb += case @@PVP_STATUS[tb_data['status']]
-      when :idle
-        ' uncontested.'
-      when :populating
-        ' waiting for players!'
-      when :active
-        ' at WAR! :crossed_swords:'
-      when :concluded
-        ' just finishing a battle.'
-      else
-        warn "Unknown Tol-barad status: #{tb_data['status']}"
-        "... Actually I don't know."
+            when :idle
+              ' uncontested.'
+            when :populating
+              ' waiting for players!'
+            when :active
+              ' at WAR! :crossed_swords:'
+            when :concluded
+              ' just finishing a battle.'
+            else
+              warn "Unknown Tol-barad status: #{tb_data['status']}"
+              "... Actually I don't know."
       end
     else
       warn "Tol'barad data missing; skipping."
       tb = "Tol'barad data is unavilable. :shield:"
     end
 
-    return "#{updown} #{wg} #{tb}"
+    "#{updown} #{wg} #{tb}"
   end
 
   def self.get_census(event, realm, guild, rank)
     begin
       event.send_message @@wait_messages.sample
-      guild_data = @@api.guild realm, guild, :fields => 'members'
+      guild_data = @@api.guild realm, guild, fields: 'members'
     rescue Battlenet::ApiException => ex
       if ex.code == 404
         event.send_message "#{event.user.mention} I couldn't find that guild or realm. Battle.net said this: `#{ex.reason}`"
@@ -357,19 +354,19 @@ module BNet
 
     classes.map! { |it| [@class_ids[it[0]][:name], it[1]] }
     races.map! { |it| [@race_ids[it[0]][:name], it[1]] }
-    genders.map! { |it|
+    genders.map! do |it|
       gender_name = 'men'
       gender_name = 'women' if @@CHARACTER_GENDERS[it[0]] == :female
       [gender_name, it[1]]
-    }
+    end
 
     if races.length > 1
-      percent = ((races[0][1]/total_members) * 100).round(2)
-      race_summary = "Races: The majority of the sample was #{races[0][0]} with #{races[0][1]} members (#{percent}%)\n" +
-          'The other races worked out as follows; '
+      percent = ((races[0][1] / total_members) * 100).round(2)
+      race_summary = "Races: The majority of the sample was #{races[0][0]} with #{races[0][1]} members (#{percent}%)\n" \
+                     'The other races worked out as follows; '
       __first = true
       races.drop(1).each do |race|
-        percent = ((race[1]/total_members) * 100).round(2)
+        percent = ((race[1] / total_members) * 100).round(2)
         race_summary += ', ' unless __first
         __first = false
         race_summary += "#{race[0]}: #{race[1]} (#{percent}%)"
@@ -379,12 +376,12 @@ module BNet
     end
 
     if classes.length > 1
-      percent = ((classes[0][1]/total_members) * 100).round(2)
-      class_summary = "Classes: The majority of the sample was #{classes[0][0]} with #{classes[0][1]} members (#{percent}%)\n" +
-          'The other classes worked out as follows; '
+      percent = ((classes[0][1] / total_members) * 100).round(2)
+      class_summary = "Classes: The majority of the sample was #{classes[0][0]} with #{classes[0][1]} members (#{percent}%)\n" \
+                      'The other classes worked out as follows; '
       __first = true
       classes.drop(1).each do |cls|
-        percent = ((cls[1]/total_members) * 100).round(2)
+        percent = ((cls[1] / total_members) * 100).round(2)
         class_summary += ', ' unless __first
         __first = false
         class_summary += "#{cls[0]}: #{cls[1]} (#{percent}%)"
@@ -394,9 +391,9 @@ module BNet
     end
 
     if genders.length > 1 && genders[0][1] != genders[1][1]
-      percent = ((genders[0][1]/total_members) * 100).round(2)
-      gender_summary = "Genders: Most of the guilds characters are #{genders[0][0]} at #{genders[0][1]} (#{percent}%). " +
-          "By simple subtraction, that leaves #{genders[1][1]} #{genders[1][0]}."
+      percent = ((genders[0][1] / total_members) * 100).round(2)
+      gender_summary = "Genders: Most of the guilds characters are #{genders[0][0]} at #{genders[0][1]} (#{percent}%). " \
+                       "By simple subtraction, that leaves #{genders[1][1]} #{genders[1][0]}."
     elsif genders.length > 1
       # Equals!
       gender_summary = "Genders: The guild is split down the middle as far as gender goes. \\o/ (#{genders[0][1]} of each)"
@@ -405,6 +402,6 @@ module BNet
     end
 
     event.send_message "(#{event.user.mention}) The census is in for #{guild} (#{realm}) - #{rank_name} members (#{members.length} characters)!\n" +
-        race_summary + "\n" + class_summary + "\n" + gender_summary
+                       race_summary + "\n" + class_summary + "\n" + gender_summary
   end
 end

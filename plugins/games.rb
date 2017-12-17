@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'discordrb'
 require_relative '../util/utils'
@@ -12,9 +14,7 @@ module Games
 
     rnd_min = ServerConf.get_svar(event.server, Const::SVAR_ROLL_MIN)
     rnd_max = ServerConf.get_svar(event.server, Const::SVAR_ROLL_MAX)
-    if args.size >= 1
-      rnd_max = args[0].to_i
-    end
+    rnd_max = args[0].to_i if args.size >= 1
 
     # +1 because "::random_number returns an integer: 0 <= ::random_number < n."
     rnd = SecureRandom.random_number(1 + rnd_max - rnd_min) + rnd_min

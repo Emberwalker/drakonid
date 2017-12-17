@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'chunker'
 require_relative 'const'
 require_relative 'conversations'

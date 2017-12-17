@@ -1,4 +1,5 @@
-#!/bin/false
+# frozen_string_literal: true
+
 # Logging helpers
 
 # Log ALL the things?
@@ -7,7 +8,7 @@ DEBUG = true
 # Logs a fatal error and crashes out
 def fatal(msg)
   puts "!! #{msg}"
-  exit -1
+  exit(-1)
 end
 
 def warn(msg)
