@@ -9,6 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.3.0)
+    chronic (0.10.2)
     discordrb (3.2.1)
       discordrb-webhooks (~> 3.2.0.1)
       opus-ruby
@@ -82,6 +83,7 @@ PLATFORMS
 
 DEPENDENCIES
   battlenet!
+  chronic (~> 0.10.2)
   discordrb (~> 3.2.1)
   fuzzy_match (~> 2.1)
   httparty (~> 0.14.0)

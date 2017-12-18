@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
-require_relative '../logging'
+require_relative 'logging'
 require_relative 'files'
 require_relative 'server_conf'
 require_relative 'const'

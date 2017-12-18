@@ -34,6 +34,7 @@ module Const
   SVAR_ALLOW_GAMES = Const::SVarSpec.new('games_enabled', 'Enable games commands such as !roll', true, :bool)
   SVAR_ROLL_MIN = Const::SVarSpec.new('roll_min', 'Default minimum for !roll', 1, :int)
   SVAR_ROLL_MAX = Const::SVarSpec.new('roll_max', 'Default maximum for !roll', 100, :int)
+  SVAR_DISC_ALLOW_SU = Const::SVarSpec.new('disc_allow_su', 'Allow superusers to use !disc', false, :bool)
 
   ALL_SVARS = Const.constants(false).select { |c| c.to_s.start_with? 'SVAR_' }.map { |c| Const.const_get c }
 end

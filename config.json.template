@@ -2,5 +2,6 @@
   "discord_app_id": "",
   "discord_token": "",
   "battlenet_token": "",
-  "global_administrator": ""
+  "global_administrator": "",
+  "debug_logging": false
 }

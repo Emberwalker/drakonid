@@ -6,7 +6,7 @@ require 'discordrb'
 require_relative '../util/permissions'
 require_relative '../util/const'
 require_relative '../util/server_conf'
-require_relative '../logging'
+require_relative '../util/logging'
 
 # noinspection RubyClassVariableUsageInspection, RubyJumpError, RubyClassVariableNamingConvention
 module BNet

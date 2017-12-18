@@ -2,8 +2,20 @@
 
 # Logging helpers
 
-# Log ALL the things?
-DEBUG = true
+##
+# Logging metadata
+module Logging
+  # Log ALL the things?
+  @debug = true
+
+  def self.debug?
+    @debug
+  end
+
+  def self.debug=(dbg)
+    @debug = dbg
+  end
+end
 
 # Logs a fatal error and crashes out
 def fatal(msg)
@@ -20,5 +32,5 @@ def info(msg)
 end
 
 def debug(msg)
-  puts "?? #{msg}" if DEBUG
+  puts "?? #{msg}" if Logging.debug?
 end

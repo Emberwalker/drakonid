@@ -2,7 +2,6 @@
 
 require 'json'
 require 'discordrb'
-require_relative '../logging'
 require_relative '../util/utils'
 
 ##
