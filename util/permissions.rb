@@ -14,23 +14,12 @@ module Permissions
   @__current_ranks = {}
 
   def self.load_from_disk
-    if File.exist? 'ranks.json'
-      begin
-        File.open('ranks.json') do |f|
-          @__current_ranks = JSON.parse f
-        end
-      rescue StandardError => ex
-        warn "Exception parsing ranks JSON: #{ex}"
-      end
-    end
+    @__current_ranks = JSONFiles.load_file 'ranks'
     debug "Loaded permissions for #{@__current_ranks.length} servers."
   end
 
   def self.save_to_disk
-    raw_json = JSON.pretty_generate @__current_ranks
-    File.open 'ranks.json', mode: 'w' do |f|
-      f.write raw_json
-    end
+    JSONFiles.save_file 'ranks', @__current_ranks
   end
 
   def self.rank_exists?(rank_str)
