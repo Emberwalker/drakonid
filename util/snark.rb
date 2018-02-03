@@ -26,13 +26,12 @@ module Snark
     __apply_substitutions(no_snark_msg, substitutions)
   end
 
-  class << self
-    private_class_method
-    def self.__apply_substitutions(msg, substitutions)
-      substitutions.each do |key, val|
-        msg.gsub! key, val
-      end
-      msg
+  def self.__apply_substitutions(msg, substitutions)
+    substitutions.each do |key, val|
+      msg.gsub! key, val
     end
+    msg
   end
+
+  private_class_method :__apply_substitutions
 end
