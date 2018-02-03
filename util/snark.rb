@@ -27,6 +27,8 @@ module Snark
   end
 
   def self.__apply_substitutions(msg, substitutions)
+    # Dupe string to avoid frozen issues.
+    msg = msg.dup if msg.frozen?
     substitutions.each do |key, val|
       msg.gsub! key, val
     end
