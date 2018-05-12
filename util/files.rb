@@ -5,6 +5,11 @@ require 'json'
 ##
 # JSON configuration loading/saving.
 module JSONFiles
+
+  # Loads a JSON configuration/state file from disk.
+  #
+  # @param fname [String] file name/path to open
+  # @return [Object] The parsed JSON object
   def self.load_file(fname)
     fname = "#{fname}.json"
     out = nil
@@ -21,6 +26,10 @@ module JSONFiles
     out
   end
 
+  # Saves an object to a JSON configuration/state file on disk.
+  #
+  # @param fname [String] file name/path to write to
+  # @param struct [Object] object to serialize
   def self.save_file(fname, struct)
     fname = "#{fname}.json"
     raw_json = JSON.pretty_generate struct

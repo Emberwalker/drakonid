@@ -5,6 +5,14 @@ require 'chronic'
 ##
 # Natural language time helpers.
 module Chronology
+
+  # Converts a user-provided string input into a time forward/back from now.
+  #
+  # @param str [String] the user-provided string
+  # @param look_back [Boolean] true to look back in time, false to look forward
+  # @param span_strategy [Symbol] For possible choices see {Chronic::Parser#guess}.
+  # @returns [Chronic::Span, Object, nil] a time span, concrete time (value of {Chronic.time_class}) or nil if string
+  #   could not be parsed.
   def self.get_time_after_now(str, look_back = false, span_strategy = :end)
     parser = Chronic::Parser.new options: {
       guess: false,

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-##
 # Splits long messages into Discord-sized chunks, from a sequence of many small atomic messages.
 class Chunker
   MAX_MESSAGE_LENGTH = 1024

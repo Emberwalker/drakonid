@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+# Global constants
 module Const
-  # Container classes
+  # Server variable specification class
   class SVarSpec
     attr_reader :internal, :human, :default, :type
 
@@ -13,14 +14,12 @@ module Const
     end
   end
 
-  # Permissions
   PERMISSION_RANKS = %i[
     user
     superuser
     administrator
   ].freeze
 
-  # SVars
   SVARS_TYPES = %i[
     bool
     int

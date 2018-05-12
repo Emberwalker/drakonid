@@ -8,7 +8,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.3.0)
+    ast (2.4.0)
     chronic (0.10.2)
     discordrb (3.2.1)
       discordrb-webhooks (~> 3.2.0.1)
@@ -18,12 +18,12 @@ GEM
       websocket-client-simple (>= 0.3.0)
     discordrb-webhooks (3.2.0.1)
       rest-client
-    domain_name (0.5.20170404)
+    domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.6)
-    ffi (1.9.18)
-    ffi (1.9.18-x64-mingw32)
-    ffi (1.9.18-x86-mingw32)
+    ffi (1.9.23)
+    ffi (1.9.23-x64-mingw32)
+    ffi (1.9.23-x86-mingw32)
     fuzzy_match (2.1.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -37,8 +37,8 @@ GEM
     opus-ruby (1.0.1)
       ffi
     parallel (1.12.1)
-    parser (2.4.0.2)
-      ast (~> 2.3)
+    parser (2.5.1.0)
+      ast (~> 2.4.0)
     powerpack (0.1.1)
     rainbow (3.0.0)
     rbnacl (3.4.0)
@@ -57,7 +57,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rubocop (0.52.0)
+    rubocop (0.52.1)
       parallel (~> 1.10)
       parser (>= 2.4.0.2, < 3.0)
       powerpack (~> 0.1)
@@ -67,10 +67,10 @@ GEM
     ruby-progressbar (1.9.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.4)
-    unf_ext (0.0.7.4-x64-mingw32)
-    unf_ext (0.0.7.4-x86-mingw32)
-    unicode-display_width (1.3.0)
+    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.5-x64-mingw32)
+    unf_ext (0.0.7.5-x86-mingw32)
+    unicode-display_width (1.3.2)
     websocket (1.2.5)
     websocket-client-simple (0.3.0)
       event_emitter
@@ -90,4 +90,4 @@ DEPENDENCIES
   rubocop (~> 0.52.0)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
